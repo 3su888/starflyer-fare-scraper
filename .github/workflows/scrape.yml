@@ -2,15 +2,16 @@ name: Scrape Starflyer Fare
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # 毎日 18:00 UTC（= 翌日 03:00 JST）
-    
+    - cron: '0 18 * * *'   # 毎日18:00 UTC（翌日3:00 JST）
+  workflow_dispatch:      # ← ここを追加
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -23,6 +24,7 @@ jobs:
       - name: Run scraper and update CSV
         run: |
           node fetch.js
+
       - name: Commit updated CSV
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
