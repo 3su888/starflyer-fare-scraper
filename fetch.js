@@ -1,19 +1,19 @@
 // fetch.js
 const fs = require('fs');
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 
 (async () => {
-  // 1) Headless Chrome 起動
-  const browser = await chromium.puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
+  // GitHub Actions ランナーにインストール済みの Chrome を使う
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/google-chrome-stable',
+    headless: true,
+    args: ['--no-sandbox', '--disable-dev-shm-usage']
   });
+
   const page = await browser.newPage();
   await page.goto('https://www.starflyer.jp/ap/fare/faretable.aspx', { waitUntil: 'networkidle0' });
 
-  // 2) 日付＋運賃を抽出
+  // 日付＋運賃を抽出
   const data = await page.evaluate(() => {
     const rows = [];
     document.querySelectorAll('.calendar-table td').forEach(cell => {
@@ -25,12 +25,12 @@ const chromium = require('chrome-aws-lambda');
     });
     return rows;
   });
+
   await browser.close();
 
-  // 3) CSV 文字列を作成して書き込む
+  // CSV に書き出し
   const csv = data.map(r => r.join(',')).join('\n');
-  fs.writeFileSync('fare.csv', csv);
-
+  fs.writeFileSync('fare.csv', csv, 'utf8');
   console.log(`Wrote ${data.length} rows to fare.csv`);
 })().catch(err => {
   console.error(err);
