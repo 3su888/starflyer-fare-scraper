@@ -18,8 +18,10 @@ jobs:
         with:
           node-version: '20'
 
+
       - name: Install dependencies
-        run: npm install puppeteer-core@10.1.0 chrome-aws-lambda@10.1.0
+        run: npm install puppeteer-core
+
 
 
       - name: Run scraper and update CSV
