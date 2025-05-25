@@ -1,16 +1,23 @@
 // fetch.js
 const fs = require('fs');
-const puppeteer = require('puppeteer');  // ← ここを変更
+const puppeteer = require('puppeteer');
 
 (async () => {
-  // Puppeteer が自動でダウンロードした Chromium を起動
+  // Puppeteer を起動
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-dev-shm-usage']
   });
-
   const page = await browser.newPage();
-  await page.goto('https://www.starflyer.jp/ap/fare/faretable.aspx', { waitUntil: 'networkidle0' });
+
+  // タイムアウトを 60 秒に延長し、networkidle2 で待機
+  await page.goto('https://www.starflyer.jp/ap/fare/faretable.aspx', {
+    waitUntil: 'networkidle2',
+    timeout: 60000
+  });
+
+  // カレンダーテーブルのセルが描画されるまで待つ（最大 60 秒）
+  await page.waitForSelector('.calendar-table td', { timeout: 60000 });
 
   // 日付＋運賃を抽出
   const data = await page.evaluate(() => {
@@ -27,7 +34,7 @@ const puppeteer = require('puppeteer');  // ← ここを変更
 
   await browser.close();
 
-  // CSV に書き出し
+  // CSV を書き出し
   const csv = data.map(r => r.join(',')).join('\n');
   fs.writeFileSync('fare.csv', csv, 'utf8');
   console.log(`Wrote ${data.length} rows to fare.csv`);
