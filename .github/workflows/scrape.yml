@@ -1,28 +1,18 @@
-name: Scrape Starflyer Fare
-
-on:
-  schedule:
-    - cron: '0 18 * * *'   # 毎日18:00 UTC（翌日3:00 JST）
-  workflow_dispatch:      # ← ここを追加
-
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-
-      - name: Install dependencies
-        run: npm install puppeteer-core
-
-
+-     - name: Install dependencies
+-       run: npm install puppeteer-core
++     - name: Install dependencies
++       run: npm install puppeteer
 
       - name: Run scraper and update CSV
         run: |
