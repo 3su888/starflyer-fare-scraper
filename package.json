@@ -1,9 +1,0 @@
-{
-  "name": "starflyer-fare-scraper",
-  "version": "1.0.0",
-  "dependencies": {
-    "puppeteer-core": "^20.0.0",
-    "chrome-aws-lambda": "^10.0.0",
-    "googleapis": "^109.0.0"
-  }
-}
