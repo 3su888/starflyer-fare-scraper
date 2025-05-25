@@ -1,11 +1,10 @@
 // fetch.js
 const fs = require('fs');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');  // ← ここを変更
 
 (async () => {
-  // GitHub Actions ランナーにインストール済みの Chrome を使う
+  // Puppeteer が自動でダウンロードした Chromium を起動
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/google-chrome-stable',
     headless: true,
     args: ['--no-sandbox', '--disable-dev-shm-usage']
   });
