@@ -1,8 +1,9 @@
 name: Scrape Starflyer Fare
 
 on:
-  schedule:
+  schedule:workflow_dispatch:
     - cron: '0 18 * * *'  # 毎日 18:00 UTC（= 翌日 03:00 JST）
+    
 
 jobs:
   scrape:
